@@ -22,8 +22,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Only image files allowed" }, { status: 400 })
     }
 
-    const result = await getPresignedUploadUrl(folder, fileType, fileName)
-    return NextResponse.json(result)
+    const { uploadUrl, key } = await getPresignedUploadUrl(folder, fileType, fileName)
+    // fileUrl points to our image proxy — avoids needing public-read ACL on the bucket
+    const fileUrl = `/api/image?key=${encodeURIComponent(key)}`
+    return NextResponse.json({ uploadUrl, fileUrl, key })
   } catch (err) {
     console.error("Upload presign error:", err)
     return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500 })

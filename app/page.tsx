@@ -1,15 +1,37 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { BootScreen } from "@/components/os/boot-screen"
 import { LoginScreen } from "@/components/os/login-screen"
 import { Desktop } from "@/components/os/desktop"
+import { isSessionValid, refreshSession } from "@/lib/auth-client"
 
-type Stage = "boot" | "login" | "desktop"
+type Stage = "checking" | "boot" | "login" | "desktop"
 
 export default function CloudOS() {
-  const [stage, setStage] = useState<Stage>("boot")
+  const [stage, setStage] = useState<Stage>("checking")
+
+  useEffect(() => {
+    async function restoreSession() {
+      if (isSessionValid()) {
+        setStage("desktop")
+        return
+      }
+      // Access token expired — try silent refresh with the refresh token
+      try {
+        const ok = await refreshSession()
+        if (ok) { setStage("desktop"); return }
+      } catch { /* fall through */ }
+      // No valid session — show normal boot → login flow
+      setStage("boot")
+    }
+    restoreSession()
+  }, [])
+
+  if (stage === "checking") {
+    return <main className="h-screen w-screen" style={{ background: "#EAE6FF" }} />
+  }
 
   return (
     <main className="h-screen w-screen overflow-hidden" style={{ background: "#EAE6FF" }}>

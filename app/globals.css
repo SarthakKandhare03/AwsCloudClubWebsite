@@ -7,15 +7,15 @@
   /* === AWS Cloud Club NMIET — Neumorphic Palette === */
   /* Primary derived from logo background #6B4FE8 */
 
-  --neu-base: #EAE6FF;
-  --neu-dark: #C2BAF0;
-  --neu-light: #FFFFFF;
+  --neu-base: #D4CEFF;
+  --neu-dark: #B0A4EE;
+  --neu-light: #F2EEFF;
 
-  --background: #EAE6FF;
+  --background: #D4CEFF;
   --foreground: #1E1060;
-  --card: #EAE6FF;
+  --card: #D4CEFF;
   --card-foreground: #1E1060;
-  --popover: #EAE6FF;
+  --popover: #D4CEFF;
   --popover-foreground: #1E1060;
 
   /* Logo purple */
@@ -105,6 +105,15 @@
   }
 }
 
+/* Hide scrollbars globally for overflow containers */
+.hide-scrollbar {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari */
+}
+
 /* ============================================================
    NEUMORPHISM SYSTEM
    Base: #EAE6FF  |  Shadow dark: #C2BAF0  |  Shadow light: #FFFFFF
@@ -112,26 +121,26 @@
 
 /* --- Surfaces --- */
 .neu-raised {
-  background: #EAE6FF;
+  background: #D4CEFF;
   box-shadow:
-    8px 8px 20px #C2BAF0,
-    -8px -8px 20px #FFFFFF;
+    8px 8px 20px #B0A4EE,
+    -8px -8px 20px #F2EEFF;
   border-radius: 1.25rem;
 }
 
 .neu-raised-sm {
-  background: #EAE6FF;
+  background: #D4CEFF;
   box-shadow:
-    4px 4px 10px #C2BAF0,
-    -4px -4px 10px #FFFFFF;
+    4px 4px 10px #B0A4EE,
+    -4px -4px 10px #F2EEFF;
   border-radius: 0.875rem;
 }
 
 .neu-raised-lg {
-  background: #EAE6FF;
+  background: #D4CEFF;
   box-shadow:
-    12px 12px 28px #C2BAF0,
-    -10px -10px 22px #FFFFFF;
+    12px 12px 28px #B0A4EE,
+    -10px -10px 22px #F2EEFF;
   border-radius: 1.5rem;
 }
 

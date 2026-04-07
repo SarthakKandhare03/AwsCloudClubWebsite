@@ -93,3 +93,28 @@ export async function resetPassword(username: string, code: string, newPassword:
 export function signOut() {
   clearTokens()
 }
+
+// ── Session helpers ──────────────────────────────────────────
+export function isSessionValid(): boolean {
+  if (typeof window === "undefined") return false
+  const token  = localStorage.getItem(KEYS.access)
+  const expiry = localStorage.getItem(KEYS.expiry)
+  if (!token || !expiry) return false
+  // 60 s buffer so we don't use a token that's about to expire
+  return Date.now() < Number(expiry) - 60_000
+}
+
+export async function refreshSession(): Promise<boolean> {
+  if (typeof window === "undefined") return false
+  const refreshToken = localStorage.getItem(KEYS.refresh)
+  const username     = localStorage.getItem(KEYS.username)
+  if (!refreshToken || !username) return false
+  try {
+    const data = await authPost("refresh", { refreshToken, username })
+    saveTokens(data)
+    return true
+  } catch {
+    clearTokens()
+    return false
+  }
+}

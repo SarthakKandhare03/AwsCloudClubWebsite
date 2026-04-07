@@ -203,7 +203,11 @@ function ListManager({
     setEditing(null)
     const defaults: Record<string, unknown> = {}
     fields.forEach((f) => {
-      defaults[f.key] = f.type === "boolean" ? false : f.type === "number" ? 0 : f.type === "tags" ? [] : ""
+      defaults[f.key] = f.type === "boolean" ? false
+        : f.type === "number" ? 0
+        : f.type === "tags" ? []
+        : f.type === "select" ? (f.options?.[0] ?? "")
+        : ""
     })
     setForm(defaults)
     setShowForm(true)
@@ -219,7 +223,9 @@ function ListManager({
     setSaving(true)
     try {
       if (editing) {
-        await updateFn(editing.id as string, form)
+        const payload: Record<string, unknown> = {}
+        fields.forEach((f) => { payload[f.key] = form[f.key] })
+        await updateFn(editing.id as string, payload)
         showToast("Updated successfully!", "success")
       } else {
         await createFn(form)

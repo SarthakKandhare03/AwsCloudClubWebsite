@@ -1,14 +1,43 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Target, Eye, Heart, Award } from "lucide-react"
+import { Target, Eye, Heart, Award, Globe, Calendar } from "lucide-react"
+import { useMeetup } from "@/lib/meetup-context"
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } }
 const item = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 260, damping: 22 } } }
 
 export function AboutApp() {
+  const { memberCount } = useMeetup()
   return (
     <motion.div className="space-y-5" variants={container} initial="hidden" animate="show">
+
+      {/* Identity card */}
+      <motion.div variants={item} className="neu-raised rounded-2xl p-6">
+        <div className="flex flex-wrap gap-6 items-start">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-bold mb-1" style={{ color: "#1E1060" }}>
+              AWS Cloud Club at NMIET
+            </h2>
+            <p className="text-sm leading-relaxed" style={{ color: "#7B6FC0" }}>
+              We teach students about the AWS Cloud and its various use cases — including security,
+              AI, business analytics, and business transformation. Our hands-on approach bridges
+              the gap between academic learning and real-world cloud careers.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 flex-shrink-0">
+            <div className="neu-inset-sm flex items-center gap-2 rounded-xl px-3 py-2">
+              <Calendar className="h-4 w-4 flex-shrink-0" style={{ color: "#6B4FE8" }} />
+              <span className="text-xs font-medium" style={{ color: "#1E1060" }}>Founded Feb 16, 2026</span>
+            </div>
+            <div className="neu-inset-sm flex items-center gap-2 rounded-xl px-3 py-2">
+              <Globe className="h-4 w-4 flex-shrink-0" style={{ color: "#FF9900" }} />
+              <span className="text-xs font-medium" style={{ color: "#1E1060" }}>616 AWS Clubs globally</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Mission */}
       <motion.div variants={item} className="neu-raised rounded-2xl p-6">
         <div className="mb-4 flex items-center gap-3">
@@ -18,9 +47,9 @@ export function AboutApp() {
           <h2 className="text-lg font-bold" style={{ color: "#1E1060" }}>Our Mission</h2>
         </div>
         <p className="text-sm leading-relaxed" style={{ color: "#7B6FC0" }}>
-          To democratize cloud computing education and empower students with the skills needed to build
-          scalable, innovative solutions using AWS technologies. We believe in learning by doing, fostering
-          a community where knowledge sharing and collaboration drive growth.
+          To democratize cloud computing education at NMIET — empowering every student with
+          the practical AWS skills needed to build scalable, innovative solutions. We learn by
+          doing: every session involves real AWS accounts, real deployments, real impact.
         </p>
       </motion.div>
 
@@ -33,9 +62,9 @@ export function AboutApp() {
           <h2 className="text-lg font-bold" style={{ color: "#1E1060" }}>Our Vision</h2>
         </div>
         <p className="text-sm leading-relaxed" style={{ color: "#7B6FC0" }}>
-          To become the leading student-driven cloud computing community, producing industry-ready
-          professionals who can leverage AWS to solve real-world problems and contribute to
-          technological advancement.
+          To become the most active student-driven cloud community in Maharashtra — producing
+          AWS-certified, industry-ready professionals who use cloud technology to solve
+          real-world problems and contribute to India's digital transformation.
         </p>
       </motion.div>
 
@@ -44,11 +73,11 @@ export function AboutApp() {
         <h2 className="mb-4 text-lg font-bold" style={{ color: "#1E1060" }}>What We Do</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {[
-            { title: "Workshops & Training", desc: "Hands-on sessions covering AWS services, cloud architecture, and best practices", icon: Award, color: "#6B4FE8" },
-            { title: "Hackathons", desc: "Competitive events to build innovative cloud-powered solutions", icon: Target, color: "#FF9900" },
-            { title: "Study Groups", desc: "Collaborative learning environments for AWS certifications", icon: Heart, color: "#E85580" },
-            { title: "Industry Connect", desc: "Networking opportunities with AWS professionals and cloud experts", icon: Eye, color: "#5BA8D8" },
-          ].map((card, i) => (
+            { title: "Workshops & Training",  desc: "Hands-on AWS sessions — EC2, Lambda, S3, DynamoDB, IAM, and more. Real accounts, real infrastructure.", icon: Award,  color: "#6B4FE8" },
+            { title: "Community Events",      desc: "Introductory sessions, networking meetups, guest lectures from AWS professionals and cloud experts.", icon: Target, color: "#FF9900" },
+            { title: "Certification Prep",    desc: "Collaborative study groups for AWS Cloud Practitioner, Solutions Architect, and Developer exams.", icon: Heart,  color: "#E85580" },
+            { title: "Cloud Projects",        desc: "Building and deploying real AWS-powered projects that solve actual problems for students and the campus.", icon: Eye,    color: "#5BA8D8" },
+          ].map((card) => (
             <motion.div
               key={card.title}
               className="neu-inset-sm rounded-xl p-4"
@@ -68,9 +97,9 @@ export function AboutApp() {
       {/* Values */}
       <motion.div variants={item} className="grid gap-4 sm:grid-cols-3">
         {[
-          { value: "Innovation", desc: "Pushing boundaries with creative cloud solutions", color: "#6B4FE8" },
-          { value: "Community",  desc: "Growing together through collaboration",          color: "#50C88A" },
-          { value: "Excellence", desc: "Striving for the highest standards",              color: "#FF9900" },
+          { value: "Innovation", desc: "Pushing boundaries with creative cloud solutions on real AWS infrastructure", color: "#6B4FE8" },
+          { value: "Community",  desc: `Open to all — ${memberCount ?? 299} members and growing across Pune, Maharashtra`, color: "#50C88A" },
+          { value: "Excellence", desc: "Official AWS Cloud Club chapter, held to AWS global standards",             color: "#FF9900" },
         ].map((v) => (
           <motion.div
             key={v.value}

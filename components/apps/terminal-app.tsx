@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
+import { useMeetup } from "@/lib/meetup-context"
 
 interface TerminalLine {
   type: "input" | "output" | "error"
@@ -11,81 +12,150 @@ const awsFacts = [
   "AWS has over 200 fully featured services from data centers globally.",
   "The first AWS service was S3, launched in March 2006.",
   "AWS operates in 33 geographic regions with 105 Availability Zones.",
-  "Lambda was the first mainstream FaaS (serverless compute) service, launched 2014.",
-  "EC2 stands for Elastic Compute Cloud — it launched in 2006.",
+  "Lambda was the first mainstream FaaS (serverless compute) service, launched in 2014.",
+  "EC2 stands for Elastic Compute Cloud — it launched in August 2006.",
   "AWS accounts for roughly 31% of the global cloud market share.",
-  "Amazon S3 stores over 100 trillion objects.",
+  "Amazon S3 stores over 100 trillion objects worldwide.",
   "AWS CloudFront has over 600 Points of Presence worldwide.",
+  "Amazon DynamoDB can handle over 10 trillion requests per day.",
+  "AWS was the first cloud provider to offer a managed Kubernetes service (EKS) in 2018.",
+  "Amazon Route 53 performs over 100 billion DNS queries daily.",
+  "AWS re:Invent 2023 had over 52,000 in-person attendees in Las Vegas.",
 ]
 
-const commandRegistry: Record<string, string> = {
+export function TerminalApp() {
+  const { memberCount } = useMeetup()
+  const m = memberCount ?? 299
+
+  const commandRegistry = useMemo<Record<string, string>>(() => ({
   help: `Available commands:
   help          - Show this help message
-  about         - Learn about AWS Cloud Club NMIET
-  join          - Join our community
-  events        - Show upcoming events
-  team          - List team members
-  skills        - Show club skills
-  clear         - Clear terminal
+  about         - About AWS Cloud Club NMIET
+  mission       - Our mission & vision
+  join          - How to join the club
+  events        - Our events & activities
+  team          - Core team structure
+  skills        - Technologies we work with
+  achievements  - Club highlights & wins
+  contact       - Get in touch with us
   aws           - Random AWS fun fact
   whoami        - Who are you?
   date          - Show current date
+  clear         - Clear terminal
   echo [text]   - Echo back text`,
 
   about: `
-╔═══════════════════════════════════════════╗
-║      AWS CLOUD CLUB NMIET  v1.0           ║
-╠═══════════════════════════════════════════╣
-║  Empowering the next generation of        ║
-║  cloud innovators through hands-on        ║
-║  learning and community building at       ║
-║  NMIET, Navi Mumbai.                      ║
-╚═══════════════════════════════════════════╝`,
+╔══════════════════════════════════════════════╗
+║    AWS Cloud Club at NMIET  v1.0             ║
+║    Nutan Maharashtra Inst. of Eng. & Tech    ║
+╠══════════════════════════════════════════════╣
+║  Teaching students AWS Cloud use cases:      ║
+║  security, AI, business analytics &          ║
+║  business transformation.                   ║
+║                                              ║
+║  📍 Talegaon Dabhade, Pune, Maharashtra      ║
+║  📅 Founded: February 16, 2026               ║
+║  👥 ${m} Members   🌐 1 of 616 AWS Clubs     ║
+╚══════════════════════════════════════════════╝`,
+
+  mission: `
+🎯 Mission:
+   To bridge the gap between academic learning and
+   real-world cloud computing by giving students
+   hands-on AWS experience and industry exposure.
+
+👁️  Vision:
+   Build a thriving cloud community where every
+   student can learn, build, and launch on AWS.
+
+💜 Values:
+   • Learn by doing — workshops, not just lectures
+   • Open community — everyone is welcome
+   • Real projects — actual AWS deployments
+   • Give back — share knowledge freely`,
 
   join: `
-🚀 Welcome to AWS Cloud Club NMIET!
+🚀 Join AWS Cloud Club NMIET!
 
-To join our community:
-1. Follow us on social media (@awscloudclubNMIET)
-2. Join our Discord server
-3. Attend our next workshop
+Steps to become a member:
+  1. Visit our Meetup page and RSVP to events
+     meetup.com/aws-cloud-club-at-nutan-…
+  2. Attend our next workshop or event
+  3. Connect with us on social media
+  4. Create an account on this portal → click
+     the lock icon on the login screen
+
+📧 Email: awscloudclub.nmiet@gmail.com
 
 Type 'events' to see upcoming activities!`,
 
   events: `
-📅 Upcoming Events:
-┌────────────────────────────────────────┐
-│ 🎯 Cloud Workshop       - Next Week    │
-│ 🏆 Hackathon 2026       - April        │
-│ 📚 Study Group          - Every Friday │
-│ 🎤 Guest Speaker        - TBA          │
-│ ☁️  AWS Certification   - Coming Soon  │
-└────────────────────────────────────────┘`,
+📅 Events:
+
+  ┌─────────────────────────────────────────────┐
+  │ 🚀 AWS Cloud Club Introductory Event        │
+  │    📅 April 8, 2026  10:00 AM – 12:00 PM   │
+  │    📍 In-person at NMIET, Pune              │
+  │    👥 236 RSVPs  (Open to all!)             │
+  │    Covers: AWS fundamentals, career paths,  │
+  │    upcoming workshops & hands-on projects.  │
+  └─────────────────────────────────────────────┘
+
+More events coming! Check the Events app or
+visit meetup.com/aws-cloud-club-at-nutan-… to RSVP.`,
 
   team: `
-👥 Core Team Members:
-- Alex Chen      [President]      🟣 Online
-- Sarah Johnson  [Vice President] 🟣 Online
-- Mike Williams  [Tech Lead]      🟣 Online
-- Emily Davis    [Events]         🟣 Online
-- James Wilson   [Workshop]       🟡 Away
-- Lisa Thompson  [Content]        🟣 Online`,
+👥 Core Team — AWS Cloud Club NMIET:
+
+  Neha Sharma     [Captain / Organizer]  🟢 Running
+  ──────────────────────────────────────────────────
+  ${m} members strong and growing!
+
+  Interested in a leadership role?
+  Email: awscloudclub.nmiet@gmail.com
+  or open the Team app for the full roster.`,
 
   skills: `
-☁️ Club Skills & Technologies:
+☁️  Technologies & AWS Services we work with:
 
-AWS Services    ████████████████░░░░ 80%
-Serverless      ███████████████░░░░░ 75%
-DevOps / CI-CD  ██████████████░░░░░░ 70%
-Machine Learning████████████░░░░░░░░ 60%
-Cloud Security  ███████████████░░░░░ 75%`,
+  AWS Core        ████████████████░░░░  80%
+  Serverless      ███████████████░░░░░  75%
+  DevOps / CI-CD  ██████████████░░░░░░  70%
+  Cloud Security  ███████████████░░░░░  75%
+  Machine Learning████████████░░░░░░░░  60%
+  IaC (CDK/CFN)   ████████████░░░░░░░░  60%
 
-  whoami: "cloud_enthusiast@aws-club-nmiet",
-}
+  Key services: EC2, S3, Lambda, DynamoDB,
+  API Gateway, Cognito, CloudFront, SES, IAM`,
 
-export function TerminalApp() {
+  achievements: `
+🏆 Club Highlights:
+
+  ★ Official AWS Cloud Club Chapter (est. Feb 2026)
+  ★ ${m} Members on Meetup & Growing Fast
+  ★ 236+ RSVPs for Our Very First Event
+  ★ 1 of 616 AWS Cloud Clubs Worldwide
+  ★ Open Community — Anyone Can Join!
+
+Type 'about' for more club info.`,
+
+  contact: `
+📬 Contact AWS Cloud Club NMIET:
+
+  📧 Email   : awscloudclub.nmiet@gmail.com
+  🌐 Meetup  : meetup.com/aws-cloud-club-at-nutan-…
+  📍 Location: NMIET, Talegaon Dabhade, Pune
+
+  Or use the Contact app on the desktop
+  to send us a message directly!`,
+
+  whoami: "guest@aws-cloud-club-nmiet:~$",
+  }), [m])
+
   const [lines, setLines] = useState<TerminalLine[]>([
-    { type: "output", content: "AWS Cloud Club NMIET Terminal v1.0" },
+    { type: "output", content: "AWS Cloud Club NMIET — Terminal v1.0" },
+    { type: "output", content: "Nutan Maharashtra Institute of Engineering & Technology" },
+    { type: "output", content: '─────────────────────────────────────────────────────' },
     { type: "output", content: 'Type "help" for available commands.\n' },
   ])
   const [input, setInput] = useState("")
@@ -99,12 +169,13 @@ export function TerminalApp() {
   }, [lines])
 
   const handleCommand = (cmd: string) => {
-    const trimmedCmd = cmd.trim().toLowerCase()
-    const parts = trimmedCmd.split(" ")
+    const trimmed = cmd.trim()
+    const lower = trimmed.toLowerCase()
+    const parts = lower.split(" ")
     const command = parts[0]
     const args = parts.slice(1).join(" ")
 
-    setLines((prev) => [...prev, { type: "input", content: `$ ${cmd}` }])
+    setLines((prev) => [...prev, { type: "input", content: `$ ${trimmed}` }])
 
     if (command === "clear") {
       setLines([])
@@ -121,13 +192,9 @@ export function TerminalApp() {
       return
     }
 
-    // Fix: aws fact is selected at command-execution time, not module load time
     if (command === "aws") {
       const fact = awsFacts[Math.floor(Math.random() * awsFacts.length)]
-      setLines((prev) => [
-        ...prev,
-        { type: "output", content: `☁️  AWS Fun Fact:\n\n"${fact}"` },
-      ])
+      setLines((prev) => [...prev, { type: "output", content: `☁️  AWS Fun Fact:\n\n"${fact}"` }])
       return
     }
 

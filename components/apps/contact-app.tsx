@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Send, MapPin, Mail, Phone, CheckCircle, Loader2 } from "lucide-react"
+import { Send, MapPin, Mail, CheckCircle, Loader2 } from "lucide-react"
 import { api } from "@/lib/api-client"
 
 const inputCls = "neu-input w-full rounded-xl px-4 py-2.5 text-sm"
@@ -125,7 +125,6 @@ export function ContactApp() {
               {[
                 { icon: MapPin, label: "Location", value: "NMIET Campus, Talegaon Dabhade\nPune, Maharashtra 410507", color: "#6B4FE8" },
                 { icon: Mail,   label: "Email",    value: "awscloudclub.nmiet@gmail.com",                              color: "#FF9900" },
-                { icon: Phone,  label: "Phone",    value: "Update phone in admin panel",                               color: "#50C88A" },
               ].map((info) => (
                 <div key={info.label} className="flex items-start gap-3">
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: `${info.color}12` }}>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Github, Linkedin, Mail, Server, Users, Loader2 } from "lucide-react"
+import { Github, Linkedin, Mail, Users, Loader2 } from "lucide-react"
 import { api } from "@/lib/api-client"
 
 interface TeamMember {
@@ -24,6 +24,32 @@ const item = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transiti
 
 function initials(name: string) {
   return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+}
+
+function MemberAvatar({ name, photoUrl }: { name: string; photoUrl?: string }) {
+  const [imgFailed, setImgFailed] = useState(false)
+
+  if (photoUrl && !imgFailed) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={photoUrl}
+        alt={name}
+        className="h-12 w-12 rounded-2xl object-cover"
+        style={{ boxShadow: "4px 4px 12px rgba(107,79,232,0.30)" }}
+        onError={() => setImgFailed(true)}
+      />
+    )
+  }
+
+  return (
+    <div
+      className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-bold text-white flex-shrink-0"
+      style={{ background: "linear-gradient(135deg,#6B4FE8,#B8A4FF)", boxShadow: "4px 4px 12px rgba(107,79,232,0.30)" }}
+    >
+      {initials(name)}
+    </div>
+  )
 }
 
 export function TeamApp() {
@@ -71,7 +97,7 @@ export function TeamApp() {
         </motion.div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {members.map((member, index) => (
+          {members.map((member) => (
             <motion.div
               key={member.id}
               variants={item}
@@ -81,17 +107,7 @@ export function TeamApp() {
             >
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {member.photoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={member.photoUrl} alt={member.name}
-                      className="h-12 w-12 rounded-2xl object-cover"
-                      style={{ boxShadow: "4px 4px 12px rgba(107,79,232,0.30)" }} />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl text-lg font-bold text-white"
-                      style={{ background: "linear-gradient(135deg,#6B4FE8,#B8A4FF)", boxShadow: "4px 4px 12px rgba(107,79,232,0.30)" }}>
-                      {initials(member.name)}
-                    </div>
-                  )}
+                  <MemberAvatar name={member.name} photoUrl={member.photoUrl} />
                   <div>
                     <h3 className="font-semibold text-sm" style={{ color: "#1E1060" }}>{member.name}</h3>
                     <p className="text-xs font-medium" style={{ color: "#6B4FE8" }}>{member.role}</p>
@@ -106,11 +122,6 @@ export function TeamApp() {
                     style={{ background: member.status === "running" ? "#50C88A" : "#FF9900" }} />
                   {member.status}
                 </div>
-              </div>
-
-              <div className="neu-inset-sm mb-3 flex items-center gap-2 rounded-xl px-3 py-1.5">
-                <Server className="h-3.5 w-3.5" style={{ color: "#9B8FC8" }} />
-                <code className="text-xs" style={{ color: "#9B8FC8" }}>i-{member.id.slice(0, 8)}</code>
               </div>
 
               {member.skills?.length > 0 && (

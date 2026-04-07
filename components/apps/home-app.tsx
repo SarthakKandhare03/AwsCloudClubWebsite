@@ -3,13 +3,9 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { Cloud, Sparkles, Rocket, Zap, Users, Calendar, ArrowRight, Star } from "lucide-react"
+import { useMeetup } from "@/lib/meetup-context"
 
-const stats = [
-  { label: "Members",   value: "150+", icon: Users,    color: "#6B4FE8" },
-  { label: "Events",    value: "25+",  icon: Calendar, color: "#FF9900" },
-  { label: "Projects",  value: "40+",  icon: Rocket,   color: "#50C88A" },
-  { label: "Workshops", value: "30+",  icon: Zap,      color: "#5BA8D8" },
-]
+const MEETUP_URL = "https://www.meetup.com/aws-cloud-club-at-nutan-maharashtra-inst-of-eng-tech/"
 
 const whatWeDo = [
   {
@@ -36,30 +32,27 @@ const whatWeDo = [
 ]
 
 const highlights = [
-  "AWS DeepRacer Regional Champions 2024",
-  "AWS Community Builder Recognition",
-  "100+ AWS Certifications Collectively",
-  "Best Tech Club Award — NMIET",
+  "Official AWS Cloud Club Chapter — est. February 2026",
+  "299+ Members on Meetup & Growing",
+  "Part of AWS Cloud Clubs Global Network (616 Groups)",
+  "236+ RSVPs for Our Very First Event",
 ]
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-}
+const container = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } }
+const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 260, damping: 22 } } }
 
-const item = {
-  hidden:  { opacity: 0, y: 20 },
-  show:    { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 260, damping: 22 } },
-}
+export function HomeApp({ onLearnMore }: { onLearnMore?: () => void }) {
+  const { memberCount } = useMeetup()
 
-export function HomeApp() {
+  const stats = [
+    { label: "Members",  value: memberCount !== null ? `${memberCount}` : "...", icon: Users,    color: "#6B4FE8" },
+    { label: "Events",   value: "1+",   icon: Calendar, color: "#FF9900" },
+    { label: "Projects", value: "3+",   icon: Rocket,   color: "#50C88A" },
+    { label: "Team",     value: "30+",  icon: Zap,      color: "#5BA8D8" },
+  ]
+
   return (
-    <motion.div
-      className="space-y-6"
-      variants={container}
-      initial="hidden"
-      animate="show"
-    >
+    <motion.div className="space-y-6" variants={container} initial="hidden" animate="show">
       {/* ── Hero ── */}
       <motion.div
         variants={item}
@@ -69,14 +62,12 @@ export function HomeApp() {
           boxShadow: "8px 8px 24px rgba(107,79,232,0.30), -6px -6px 18px #FFFFFF",
         }}
       >
-        {/* Decorative orbs */}
         <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%)" }} />
         <div className="absolute -bottom-10 -left-10 h-36 w-36 rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(255,255,255,0.10), transparent 70%)" }} />
 
         <div className="relative z-10 flex flex-col items-start gap-5 lg:flex-row lg:items-center">
-          {/* Logo */}
           <motion.div
             className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl"
             style={{ background: "rgba(255,255,255,0.18)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.30)" }}
@@ -84,16 +75,9 @@ export function HomeApp() {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.15, type: "spring" as const, stiffness: 300 }}
           >
-            <Image
-              src="/logo-full.png"
-              alt="AWS Cloud Club NMIET"
-              width={80}
-              height={80}
-              className="rounded-xl object-cover"
-            />
+            <Image src="/logo-full.png" alt="AWS Cloud Club NMIET" width={80} height={80} className="rounded-xl object-cover" />
           </motion.div>
 
-          {/* Text */}
           <div>
             <div className="mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
               style={{ background: "rgba(255,255,255,0.18)", color: "rgba(255,255,255,0.90)" }}>
@@ -111,7 +95,10 @@ export function HomeApp() {
               real-world projects, and a thriving community.
             </p>
             <div className="flex flex-wrap gap-3">
-              <motion.button
+              <motion.a
+                href={MEETUP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-[#6B4FE8]"
                 style={{ background: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}
                 whileHover={{ y: -2, boxShadow: "0 8px 24px rgba(0,0,0,0.16)" }}
@@ -119,8 +106,9 @@ export function HomeApp() {
               >
                 <Rocket className="h-4 w-4" />
                 Join the Club
-              </motion.button>
+              </motion.a>
               <motion.button
+                onClick={onLearnMore}
                 className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-2.5 text-sm font-semibold text-white"
                 style={{ background: "rgba(255,255,255,0.12)" }}
                 whileHover={{ background: "rgba(255,255,255,0.22)", y: -1 }}
@@ -136,17 +124,14 @@ export function HomeApp() {
 
       {/* ── Stats ── */}
       <motion.div variants={item} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, i) => (
+        {stats.map((stat) => (
           <motion.div
             key={stat.label}
             className="neu-raised-sm flex flex-col items-start gap-2 rounded-2xl p-5"
             whileHover={{ y: -4, boxShadow: "7px 7px 20px #C2BAF0, -7px -7px 20px #FFFFFF" }}
             transition={{ type: "spring" as const, stiffness: 300 }}
           >
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl"
-              style={{ background: `${stat.color}18` }}
-            >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: `${stat.color}18` }}>
               <stat.icon className="h-5 w-5" style={{ color: stat.color }} />
             </div>
             <div>
@@ -168,10 +153,7 @@ export function HomeApp() {
               whileHover={{ y: -4 }}
               transition={{ type: "spring" as const, stiffness: 300, delay: i * 0.05 }}
             >
-              <div
-                className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl"
-                style={{ background: card.lightBg }}
-              >
+              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl" style={{ background: card.lightBg }}>
                 <card.icon className="h-6 w-6" style={{ color: card.color }} />
               </div>
               <h3 className="mb-2 text-lg font-bold" style={{ color: card.color }}>{card.title}</h3>
@@ -182,10 +164,7 @@ export function HomeApp() {
       </motion.div>
 
       {/* ── Highlights ── */}
-      <motion.div
-        variants={item}
-        className="neu-raised-sm rounded-2xl p-6"
-      >
+      <motion.div variants={item} className="neu-raised-sm rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-4">
           <Star className="h-5 w-5" style={{ color: "#FFB800" }} />
           <h2 className="text-xl font-bold" style={{ color: "#1E1060" }}>Our Highlights</h2>
@@ -199,10 +178,8 @@ export function HomeApp() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + i * 0.08 }}
             >
-              <div
-                className="h-2 w-2 rounded-full flex-shrink-0"
-                style={{ background: "linear-gradient(135deg,#6B4FE8,#8B6FFF)" }}
-              />
+              <div className="h-2 w-2 rounded-full flex-shrink-0"
+                style={{ background: "linear-gradient(135deg,#6B4FE8,#8B6FFF)" }} />
               <span className="text-sm font-medium" style={{ color: "#1E1060" }}>{h}</span>
             </motion.div>
           ))}
@@ -219,9 +196,7 @@ export function HomeApp() {
         }}
       >
         <Sparkles className="mx-auto mb-3 h-8 w-8" style={{ color: "#6B4FE8" }} />
-        <h3 className="mb-2 text-lg font-bold" style={{ color: "#1E1060" }}>
-          Explore the Cloud OS
-        </h3>
+        <h3 className="mb-2 text-lg font-bold" style={{ color: "#1E1060" }}>Explore the Cloud OS</h3>
         <p className="text-sm" style={{ color: "#7B6FC0" }}>
           Use the desktop icons or taskbar to open apps — Team, Events, Projects, Resources, and more.
           Drag windows, resize them, and make this OS your own!

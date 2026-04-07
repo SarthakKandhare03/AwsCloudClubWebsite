@@ -83,6 +83,9 @@ export const api = {
       demote:  (username: string) => apiFetch<{ success: boolean }>("/api/admin/users", { method: "PUT", body: JSON.stringify({ username, action: "demote" }) }),
     },
   },
+  meetup: {
+    data: () => apiFetch<{ memberCount: number; groupUrl: string; events: unknown[] }>("/api/meetup"),
+  },
   upload: {
     getPresignedUrl: (folder: string, fileType: string) =>
       apiFetch<{ uploadUrl: string; fileUrl: string; key: string }>("/api/upload", {

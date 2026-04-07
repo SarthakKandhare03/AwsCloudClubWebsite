@@ -22,7 +22,9 @@ const client = new DynamoDBClient({
   },
 })
 
-export const db = DynamoDBDocumentClient.from(client)
+export const db = DynamoDBDocumentClient.from(client, {
+  marshallOptions: { removeUndefinedValues: true },
+})
 
 // ── Table Names (from env vars) ───────────────────────────────
 export const TABLES = {
