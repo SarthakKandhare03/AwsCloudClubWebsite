@@ -10,32 +10,32 @@ import {
 import Image from "next/image"
 
 // OS chrome — always bundled (tiny, needed immediately)
-import { Window }        from "./window"
-import { Taskbar }       from "./taskbar"
-import { DesktopIcon }   from "./desktop-icon"
-import { StartMenu }     from "./start-menu"
+import { Window } from "./window"
+import { Taskbar } from "./taskbar"
+import { DesktopIcon } from "./desktop-icon"
+import { StartMenu } from "./start-menu"
 import { WeatherWidget } from "./weather-widget"
 import { CalendarWidget } from "./calendar-widget"
-import { Wallpaper }     from "./wallpaper"
-import { QuoteTicker }   from "./quote-ticker"
-import { AppDrawer }     from "./app-drawer"
+import { Wallpaper } from "./wallpaper"
+import { QuoteTicker } from "./quote-ticker"
+import { AppDrawer } from "./app-drawer"
 
 // ── Lazy-loaded app components ────────────────────────────────────────────────
 // Each app is split into its own JS chunk and only fetched when the user
 // actually opens that window, slashing the initial bundle by ~120 KB.
-const HomeApp        = lazy(() => import("../apps/home-app").then(m => ({ default: m.HomeApp })))
-const AboutApp       = lazy(() => import("../apps/about-app").then(m => ({ default: m.AboutApp })))
-const TeamApp        = lazy(() => import("../apps/team-app").then(m => ({ default: m.TeamApp })))
-const EventsApp      = lazy(() => import("../apps/events-app").then(m => ({ default: m.EventsApp })))
-const ProjectsApp    = lazy(() => import("../apps/projects-app").then(m => ({ default: m.ProjectsApp })))
-const ResourcesApp   = lazy(() => import("../apps/resources-app").then(m => ({ default: m.ResourcesApp })))
-const SocialApp      = lazy(() => import("../apps/social-app").then(m => ({ default: m.SocialApp })))
-const ContactApp     = lazy(() => import("../apps/contact-app").then(m => ({ default: m.ContactApp })))
+const HomeApp = lazy(() => import("../apps/home-app").then(m => ({ default: m.HomeApp })))
+const AboutApp = lazy(() => import("../apps/about-app").then(m => ({ default: m.AboutApp })))
+const TeamApp = lazy(() => import("../apps/team-app").then(m => ({ default: m.TeamApp })))
+const EventsApp = lazy(() => import("../apps/events-app").then(m => ({ default: m.EventsApp })))
+const ProjectsApp = lazy(() => import("../apps/projects-app").then(m => ({ default: m.ProjectsApp })))
+const ResourcesApp = lazy(() => import("../apps/resources-app").then(m => ({ default: m.ResourcesApp })))
+const SocialApp = lazy(() => import("../apps/social-app").then(m => ({ default: m.SocialApp })))
+const ContactApp = lazy(() => import("../apps/contact-app").then(m => ({ default: m.ContactApp })))
 const AchievementsApp = lazy(() => import("../apps/achievements-app").then(m => ({ default: m.AchievementsApp })))
-const TerminalApp    = lazy(() => import("../apps/terminal-app").then(m => ({ default: m.TerminalApp })))
-const ProfileApp     = lazy(() => import("../apps/profile-app").then(m => ({ default: m.ProfileApp })))
-const AdminApp       = lazy(() => import("../apps/admin-app").then(m => ({ default: m.AdminApp })))
-const GalleryApp     = lazy(() => import("../apps/gallery-app").then(m => ({ default: m.GalleryApp })))
+const TerminalApp = lazy(() => import("../apps/terminal-app").then(m => ({ default: m.TerminalApp })))
+const ProfileApp = lazy(() => import("../apps/profile-app").then(m => ({ default: m.ProfileApp })))
+const AdminApp = lazy(() => import("../apps/admin-app").then(m => ({ default: m.AdminApp })))
+const GalleryApp = lazy(() => import("../apps/gallery-app").then(m => ({ default: m.GalleryApp })))
 
 // Auth (server-side helpers — not chunked)
 import { getAccessToken, parseJwtPayload, signOut } from "@/lib/auth-client"
@@ -44,17 +44,17 @@ import type { AppId, WindowState, AppMeta } from "@/lib/types"
 
 // ── App registry ──────────────────────────────────────────────────────────────
 const desktopApps: AppMeta[] = [
-  { id: "home",         label: "Home",         icon: <Home className="h-6 w-6" />,        gradient: "linear-gradient(135deg,#6B4FE8,#8B6FFF)" },
-  { id: "about",        label: "About Us",     icon: <Cloud className="h-6 w-6" />,       gradient: "linear-gradient(135deg,#B8A4FF,#8B6FFF)" },
-  { id: "team",         label: "Team",         icon: <Users className="h-6 w-6" />,       gradient: "linear-gradient(135deg,#5BA8D8,#4B90C8)" },
-  { id: "events",       label: "Events",       icon: <Calendar className="h-6 w-6" />,    gradient: "linear-gradient(135deg,#FF9900,#E88800)" },
-  { id: "projects",     label: "Projects",     icon: <FolderOpen className="h-6 w-6" />,  gradient: "linear-gradient(135deg,#50C88A,#3AAA72)" },
-  { id: "resources",    label: "Resources",    icon: <BookOpen className="h-6 w-6" />,    gradient: "linear-gradient(135deg,#6B4FE8,#5B3FD8)" },
-  { id: "social",       label: "Social",       icon: <Share2 className="h-6 w-6" />,      gradient: "linear-gradient(135deg,#E85580,#C83565)" },
-  { id: "contact",      label: "Contact",      icon: <Mail className="h-6 w-6" />,        gradient: "linear-gradient(135deg,#5BA8D8,#3B88C0)" },
-  { id: "achievements", label: "Achievements", icon: <Trophy className="h-6 w-6" />,      gradient: "linear-gradient(135deg,#FFB800,#E89800)" },
-  { id: "gallery",      label: "Gallery",      icon: <ImageIcon className="h-6 w-6" />,   gradient: "linear-gradient(135deg,#E85580,#B83060)" },
-  { id: "terminal",     label: "Terminal",     icon: <Terminal className="h-6 w-6" />,    gradient: "linear-gradient(135deg,#2D1B8A,#1E1060)" },
+  { id: "home", label: "Home", icon: <Home className="h-6 w-6" />, gradient: "linear-gradient(135deg,#6B4FE8,#8B6FFF)" },
+  { id: "about", label: "About Us", icon: <Cloud className="h-6 w-6" />, gradient: "linear-gradient(135deg,#B8A4FF,#8B6FFF)" },
+  { id: "team", label: "Team", icon: <Users className="h-6 w-6" />, gradient: "linear-gradient(135deg,#5BA8D8,#4B90C8)" },
+  { id: "events", label: "Events", icon: <Calendar className="h-6 w-6" />, gradient: "linear-gradient(135deg,#FF9900,#E88800)" },
+  { id: "projects", label: "Projects", icon: <FolderOpen className="h-6 w-6" />, gradient: "linear-gradient(135deg,#50C88A,#3AAA72)" },
+  { id: "resources", label: "Resources", icon: <BookOpen className="h-6 w-6" />, gradient: "linear-gradient(135deg,#6B4FE8,#5B3FD8)" },
+  { id: "social", label: "Social", icon: <Share2 className="h-6 w-6" />, gradient: "linear-gradient(135deg,#E85580,#C83565)" },
+  { id: "contact", label: "Contact", icon: <Mail className="h-6 w-6" />, gradient: "linear-gradient(135deg,#5BA8D8,#3B88C0)" },
+  { id: "achievements", label: "Achievements", icon: <Trophy className="h-6 w-6" />, gradient: "linear-gradient(135deg,#FFB800,#E89800)" },
+  { id: "gallery", label: "Gallery", icon: <ImageIcon className="h-6 w-6" />, gradient: "linear-gradient(135deg,#E85580,#B83060)" },
+  { id: "terminal", label: "Terminal", icon: <Terminal className="h-6 w-6" />, gradient: "linear-gradient(135deg,#2D1B8A,#1E1060)" },
 ]
 
 const appTitles: Record<AppId, string> = {
@@ -66,19 +66,19 @@ const appTitles: Record<AppId, string> = {
 }
 
 const appIcons: Record<AppId, React.ReactNode> = {
-  home:         <Home className="h-4 w-4" />,
-  about:        <Cloud className="h-4 w-4" />,
-  team:         <Users className="h-4 w-4" />,
-  events:       <Calendar className="h-4 w-4" />,
-  projects:     <FolderOpen className="h-4 w-4" />,
-  resources:    <BookOpen className="h-4 w-4" />,
-  social:       <Share2 className="h-4 w-4" />,
-  contact:      <Mail className="h-4 w-4" />,
+  home: <Home className="h-4 w-4" />,
+  about: <Cloud className="h-4 w-4" />,
+  team: <Users className="h-4 w-4" />,
+  events: <Calendar className="h-4 w-4" />,
+  projects: <FolderOpen className="h-4 w-4" />,
+  resources: <BookOpen className="h-4 w-4" />,
+  social: <Share2 className="h-4 w-4" />,
+  contact: <Mail className="h-4 w-4" />,
   achievements: <Trophy className="h-4 w-4" />,
-  terminal:     <Terminal className="h-4 w-4" />,
-  profile:      <UserCircle className="h-4 w-4" />,
-  admin:        <ShieldCheck className="h-4 w-4" />,
-  gallery:      <ImageIcon className="h-4 w-4" />,
+  terminal: <Terminal className="h-4 w-4" />,
+  profile: <UserCircle className="h-4 w-4" />,
+  admin: <ShieldCheck className="h-4 w-4" />,
+  gallery: <ImageIcon className="h-4 w-4" />,
 }
 
 // ── Loading skeleton shown while lazy chunk fetches ───────────────────────────
@@ -104,7 +104,7 @@ function getInitialPosition(id: AppId) {
     home: { x: 80, y: 40 }, about: { x: 100, y: 50 }, team: { x: 120, y: 60 },
   }
   if (offsets[id]) return offsets[id]
-  
+
   // Deterministic fallback based on id string length/hash to avoid Math.random hydration mismatch
   const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
   return { x: 80 + (hash % 6) * 15, y: 40 + (hash % 4) * 15 }
@@ -112,13 +112,13 @@ function getInitialPosition(id: AppId) {
 
 // ── Desktop component ─────────────────────────────────────────────────────────
 export function Desktop({ onLogout }: { onLogout: () => void }) {
-  const [windows, setWindows]       = useState<WindowState[]>([
+  const [windows, setWindows] = useState<WindowState[]>([
     { id: "home", isMinimized: false, isMaximized: false, zIndex: 60 },
   ])
   const [highestZIndex, setHighestZIndex] = useState(60)
   const [showStartMenu, setShowStartMenu] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [isAdmin, setIsAdmin]             = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   // Sync mobile detection — no hydration flash (initialized to false to match SSR, updated on mount)
   const [isMobileDesktop, setIsMobileDesktop] = useState(false)
@@ -159,10 +159,10 @@ export function Desktop({ onLogout }: { onLogout: () => void }) {
     })
   }, [highestZIndex, isMobileDesktop])
 
-  const closeApp    = useCallback((id: AppId) => setWindows((p) => p.filter((w) => w.id !== id)), [])
+  const closeApp = useCallback((id: AppId) => setWindows((p) => p.filter((w) => w.id !== id)), [])
   const minimizeApp = useCallback((id: AppId) => setWindows((p) => p.map((w) => w.id === id ? { ...w, isMinimized: true } : w)), [])
   const maximizeApp = useCallback((id: AppId) => setWindows((p) => p.map((w) => w.id === id ? { ...w, isMaximized: !w.isMaximized } : w)), [])
-  const focusApp    = useCallback((id: AppId) => {
+  const focusApp = useCallback((id: AppId) => {
     setHighestZIndex((z) => z + 1)
     setWindows((p) => p.map((w) => w.id === id ? { ...w, zIndex: highestZIndex + 1 } : w))
   }, [highestZIndex])
@@ -177,150 +177,150 @@ export function Desktop({ onLogout }: { onLogout: () => void }) {
 
   // ── Lazy app content map ───────────────────────────────────────────────────
   const appContent: Record<AppId, React.ReactNode> = {
-    home:         <Suspense fallback={<AppLoadingSkeleton />}><HomeApp onLearnMore={() => openApp("about")} /></Suspense>,
-    about:        <Suspense fallback={<AppLoadingSkeleton />}><AboutApp /></Suspense>,
-    team:         <Suspense fallback={<AppLoadingSkeleton />}><TeamApp /></Suspense>,
-    events:       <Suspense fallback={<AppLoadingSkeleton />}><EventsApp /></Suspense>,
-    projects:     <Suspense fallback={<AppLoadingSkeleton />}><ProjectsApp /></Suspense>,
-    resources:    <Suspense fallback={<AppLoadingSkeleton />}><ResourcesApp /></Suspense>,
-    social:       <Suspense fallback={<AppLoadingSkeleton />}><SocialApp /></Suspense>,
-    contact:      <Suspense fallback={<AppLoadingSkeleton />}><ContactApp /></Suspense>,
+    home: <Suspense fallback={<AppLoadingSkeleton />}><HomeApp onLearnMore={() => openApp("about")} /></Suspense>,
+    about: <Suspense fallback={<AppLoadingSkeleton />}><AboutApp /></Suspense>,
+    team: <Suspense fallback={<AppLoadingSkeleton />}><TeamApp /></Suspense>,
+    events: <Suspense fallback={<AppLoadingSkeleton />}><EventsApp /></Suspense>,
+    projects: <Suspense fallback={<AppLoadingSkeleton />}><ProjectsApp /></Suspense>,
+    resources: <Suspense fallback={<AppLoadingSkeleton />}><ResourcesApp /></Suspense>,
+    social: <Suspense fallback={<AppLoadingSkeleton />}><SocialApp /></Suspense>,
+    contact: <Suspense fallback={<AppLoadingSkeleton />}><ContactApp /></Suspense>,
     achievements: <Suspense fallback={<AppLoadingSkeleton />}><AchievementsApp /></Suspense>,
-    terminal:     <Suspense fallback={<AppLoadingSkeleton />}><TerminalApp /></Suspense>,
-    profile:      <Suspense fallback={<AppLoadingSkeleton />}><ProfileApp onLogout={onLogout} /></Suspense>,
-    admin:        <Suspense fallback={<AppLoadingSkeleton />}><AdminApp /></Suspense>,
-    gallery:      <Suspense fallback={<AppLoadingSkeleton />}><GalleryApp /></Suspense>,
+    terminal: <Suspense fallback={<AppLoadingSkeleton />}><TerminalApp /></Suspense>,
+    profile: <Suspense fallback={<AppLoadingSkeleton />}><ProfileApp onLogout={onLogout} /></Suspense>,
+    admin: <Suspense fallback={<AppLoadingSkeleton />}><AdminApp /></Suspense>,
+    gallery: <Suspense fallback={<AppLoadingSkeleton />}><GalleryApp /></Suspense>,
   }
 
   return (
     <MeetupProvider>
-    <div
-      className="relative h-screen w-screen overflow-hidden"
-      style={{
-        backgroundColor: "#0a0a0f"
-      }}
-    >
-      {/* ── Desktop wallpaper (sm+ only) ── */}
-      <Wallpaper hideCenter={introIsMaximized} />
-
-      {/* ── Quote ticker (desktop only) ── */}
-      {!introIsMaximized && !isMobileDesktop && <QuoteTicker />}
-
-      {/* ── Mobile background: HomeApp rendered as wallpaper ── */}
-      {isMobileDesktop && (
-        <div
-          className="sm:hidden absolute inset-x-0 top-0 bottom-14 overflow-y-auto hide-scrollbar"
-          style={{ zIndex: 1 }}
-        >
-          <Suspense fallback={<AppLoadingSkeleton />}>
-            <HomeApp onLearnMore={() => openApp("about")} />
-          </Suspense>
-        </div>
-      )}
-
-      {/* ── Right sidebar widgets (desktop md+) ── */}
-      {!introIsMaximized && (
-        <div className="absolute right-4 top-4 hidden w-64 md:flex flex-col gap-3 z-10">
-          <WeatherWidget />
-          <CalendarWidget />
-        </div>
-      )}
-
-      {/* ── DESKTOP: 2-col icon grid (left sidebar) ── */}
       <div
-        className="hidden sm:grid absolute left-4 top-4 grid-cols-2 gap-2 z-10 hide-scrollbar"
-        style={{ paddingBottom: "72px", maxHeight: "calc(100dvh - 20px)", overflowY: "auto" }}
+        className="relative h-screen w-screen overflow-hidden"
+        style={{
+          backgroundColor: "#0a0a0f"
+        }}
       >
-        {desktopApps.map((app, i) => (
-          <motion.div
-            key={app.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.04, type: "spring" as const, stiffness: 260, damping: 22 }}
-          >
-            <DesktopIcon
-              icon={app.icon}
-              label={app.label}
-              gradient={app.gradient}
-              onClick={() => openApp(app.id)}
-            />
-          </motion.div>
-        ))}
-        {isAdmin && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: desktopApps.length * 0.04, type: "spring" as const, stiffness: 260, damping: 22 }}
-          >
-            <DesktopIcon
-              icon={<ShieldCheck className="h-6 w-6" />}
-              label="Admin"
-              gradient="linear-gradient(135deg,#1E1060,#2D1B8A)"
-              onClick={() => openApp("admin")}
-            />
-          </motion.div>
-        )}
-      </div>
+        {/* ── Desktop wallpaper (sm+ only) ── */}
+        <Wallpaper hideCenter={introIsMaximized} />
 
-      {/* ── Windows ── */}
-      <AnimatePresence>
-        {windows
-          .filter((win) => !(isMobileDesktop && win.id === "home"))
-          .map((win) => (
-            <Window
-              key={win.id}
-              id={win.id}
-              title={appTitles[win.id]}
-              icon={appIcons[win.id]}
-              isActive={getActiveApp() === win.id}
-              isMinimized={win.isMinimized}
-              isMaximized={win.isMaximized}
-              initialPosition={getInitialPosition(win.id)}
-              initialSize={
-                win.id === "terminal" ? { width: 640, height: 440 }
-                : win.id === "profile"  ? { width: 520, height: 640 }
-                :                         { width: 840, height: 620 }
-              }
-              onClose={() => closeApp(win.id)}
-              onMinimize={() => minimizeApp(win.id)}
-              onMaximize={() => maximizeApp(win.id)}
-              onFocus={() => focusApp(win.id)}
-              zIndex={win.zIndex}
+        {/* ── Quote ticker (desktop only) ── */}
+        {!introIsMaximized && !isMobileDesktop && <QuoteTicker />}
+
+        {/* ── Mobile background: HomeApp rendered as wallpaper ── */}
+        {isMobileDesktop && (
+          <div
+            className="sm:hidden absolute inset-x-0 top-0 bottom-14 overflow-y-auto hide-scrollbar"
+            style={{ zIndex: 1 }}
+          >
+            <Suspense fallback={<AppLoadingSkeleton />}>
+              <HomeApp onLearnMore={() => openApp("about")} />
+            </Suspense>
+          </div>
+        )}
+
+        {/* ── Right sidebar widgets (desktop md+) ── */}
+        {!introIsMaximized && (
+          <div className="absolute right-4 top-4 hidden w-64 md:flex flex-col gap-3 z-10">
+            <WeatherWidget />
+            <CalendarWidget />
+          </div>
+        )}
+
+        {/* ── DESKTOP: 2-col icon grid (left sidebar) ── */}
+        <div
+          className="absolute left-4 top-4 grid grid-cols-2 gap-2 z-10 hide-scrollbar"
+          style={{ paddingBottom: "72px", maxHeight: "calc(100vh - 20px)", overflowY: "auto" }}
+        >
+          {desktopApps.map((app, i) => (
+            <motion.div
+              key={app.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.04, type: "spring" as const, stiffness: 260, damping: 22 }}
             >
-              {appContent[win.id]}
-            </Window>
+              <DesktopIcon
+                icon={app.icon}
+                label={app.label}
+                gradient={app.gradient}
+                onClick={() => openApp(app.id)}
+              />
+            </motion.div>
           ))}
-      </AnimatePresence>
+          {isAdmin && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: desktopApps.length * 0.04, type: "spring" as const, stiffness: 260, damping: 22 }}
+            >
+              <DesktopIcon
+                icon={<ShieldCheck className="h-6 w-6" />}
+                label="Admin"
+                gradient="linear-gradient(135deg,#1E1060,#2D1B8A)"
+                onClick={() => openApp("admin")}
+              />
+            </motion.div>
+          )}
+        </div>
 
-      {/* ── Start Menu ── */}
-      <AnimatePresence>
-        {showStartMenu && (
-          <StartMenu
-            onAppClick={(id) => { openApp(id as AppId); setShowStartMenu(false) }}
-            onClose={() => setShowStartMenu(false)}
-            onShutdown={() => { signOut(); onLogout() }}
-            isAdmin={isAdmin}
-          />
-        )}
-      </AnimatePresence>
+        {/* ── Windows ── */}
+        <AnimatePresence>
+          {windows
+            .filter((win) => !(isMobileDesktop && win.id === "home"))
+            .map((win) => (
+              <Window
+                key={win.id}
+                id={win.id}
+                title={appTitles[win.id]}
+                icon={appIcons[win.id]}
+                isActive={getActiveApp() === win.id}
+                isMinimized={win.isMinimized}
+                isMaximized={win.isMaximized}
+                initialPosition={getInitialPosition(win.id)}
+                initialSize={
+                  win.id === "terminal" ? { width: 640, height: 440 }
+                    : win.id === "profile" ? { width: 520, height: 640 }
+                      : { width: 840, height: 620 }
+                }
+                onClose={() => closeApp(win.id)}
+                onMinimize={() => minimizeApp(win.id)}
+                onMaximize={() => maximizeApp(win.id)}
+                onFocus={() => focusApp(win.id)}
+                zIndex={win.zIndex}
+              >
+                {appContent[win.id]}
+              </Window>
+            ))}
+        </AnimatePresence>
 
-      {/* ── Taskbar ── */}
-      <Taskbar
-        openApps={windows.map((w) => w.id)}
-        activeApp={getActiveApp()}
-        onAppClick={openApp}
-        onStartClick={() => setShowStartMenu((v) => !v)}
-        onMobileMenuClick={() => setShowMobileMenu(true)}
-      />
+        {/* ── Start Menu ── */}
+        <AnimatePresence>
+          {showStartMenu && (
+            <StartMenu
+              onAppClick={(id) => { openApp(id as AppId); setShowStartMenu(false) }}
+              onClose={() => setShowStartMenu(false)}
+              onShutdown={() => { signOut(); onLogout() }}
+              isAdmin={isAdmin}
+            />
+          )}
+        </AnimatePresence>
 
-      {/* ── Mobile App Drawer ── */}
-      <AppDrawer
-        apps={desktopApps}
-        isOpen={showMobileMenu}
-        onClose={() => setShowMobileMenu(false)}
-        onAppClick={openApp}
-      />
-    </div>
+        {/* ── Taskbar ── */}
+        <Taskbar
+          openApps={windows.map((w) => w.id)}
+          activeApp={getActiveApp()}
+          onAppClick={openApp}
+          onStartClick={() => setShowStartMenu((v) => !v)}
+          onMobileMenuClick={() => setShowMobileMenu(true)}
+        />
+
+        {/* ── Mobile App Drawer ── */}
+        <AppDrawer
+          apps={desktopApps}
+          isOpen={showMobileMenu}
+          onClose={() => setShowMobileMenu(false)}
+          onAppClick={openApp}
+        />
+      </div>
     </MeetupProvider>
   )
 }

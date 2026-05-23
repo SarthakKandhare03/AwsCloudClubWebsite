@@ -70,22 +70,31 @@ function ImageUpload({ onUploaded, folder, current }: {
       console.error("Upload failed:", err)
     } finally {
       setUploading(false)
+      // Reset so same file can be re-selected
+      if (ref.current) ref.current.value = ""
     }
   }
 
   return (
-    <div className="flex items-center gap-2">
-      {current && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={current} alt="Current" className="h-10 w-10 rounded-lg object-cover" />
-      )}
-      <button type="button" onClick={() => ref.current?.click()}
-        className="neu-btn inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium"
-        style={{ color: "#7B6FC0" }} disabled={uploading}>
-        {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-        {uploading ? "Uploading..." : current ? "Change photo" : "Upload photo"}
-      </button>
-      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {current && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={current} alt="Current" className="h-10 w-10 rounded-lg object-cover flex-shrink-0" />
+        )}
+        <button
+          type="button"
+          onClick={() => ref.current?.click()}
+          className="neu-btn inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium"
+          style={{ color: "#7B6FC0" }}
+          disabled={uploading}
+        >
+          {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+          {uploading ? "Uploading..." : current ? "Change photo" : "Upload photo"}
+        </button>
+        {/* Hidden file input — rendered outside overflow containers to avoid clipping */}
+        <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+      </div>
     </div>
   )
 }
@@ -319,10 +328,10 @@ function ListManager({
                       <ImageUpload folder={field.folder || "general"}
                         current={String(form[field.key] || "")}
                         onUploaded={(url) => setField(field.key, url)} />
-                      {Boolean(form[field.key]) && (
-                        <input type="text" value={String(form[field.key])} onChange={(e) => setField(field.key, e.target.value)}
-                          placeholder="Or paste URL" style={{ ...(inputCls as React.CSSProperties), fontSize: "0.75rem" }} />
-                      )}
+                      <input type="text" value={String(form[field.key] || "")}
+                        onChange={(e) => setField(field.key, e.target.value)}
+                        placeholder="Or paste image URL directly"
+                        style={{ ...(inputCls as React.CSSProperties), fontSize: "0.75rem" }} />
                     </div>
                   ) : (
                     <input type={field.type} value={String(form[field.key] ?? "")}

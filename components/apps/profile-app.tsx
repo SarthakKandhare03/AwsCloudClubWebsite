@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   User, Edit3, Calendar, Palette, ChevronRight, Check, Camera,
   LogOut, Star, Loader2, Github, Linkedin
 } from "lucide-react"
-import { api } from "@/lib/api-client"
+import { api, uploadFileToS3 } from "@/lib/api-client"
 import { signOut, getStoredUsername } from "@/lib/auth-client"
 
 const accentPresets = [
@@ -45,14 +45,17 @@ export function ProfileApp({ onLogout }: { onLogout: () => void }) {
   const [loading, setLoading]         = useState(true)
   const [isEditing, setIsEditing]     = useState(false)
   const [saving, setSaving]           = useState(false)
+  const [avatarUploading, setAvatarUploading] = useState(false)
   const [selectedAccent, setSelectedAccent] = useState("#6B4FE8")
   const [savedAccent, setSavedAccent]       = useState("#6B4FE8")
+  const avatarInputRef = useRef<HTMLInputElement>(null)
 
   // Edit form state
   const [editName, setEditName]           = useState("")
   const [editBio, setEditBio]             = useState("")
   const [editLinkedin, setEditLinkedin]   = useState("")
   const [editGithub, setEditGithub]       = useState("")
+  const [editAvatar, setEditAvatar]       = useState("")
 
   useEffect(() => {
     const load = async () => {
@@ -84,7 +87,25 @@ export function ProfileApp({ onLogout }: { onLogout: () => void }) {
     setEditBio(profile?.bio || "")
     setEditLinkedin(profile?.linkedinUrl || "")
     setEditGithub(profile?.githubUrl || "")
+    setEditAvatar(profile?.avatarUrl || "")
     setIsEditing(true)
+  }
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setAvatarUploading(true)
+    try {
+      const url = await uploadFileToS3("team", file)
+      // Save the avatar URL immediately to the profile
+      const { profile: updated } = await api.profile.update({ avatarUrl: url }) as { profile: Profile }
+      setProfile(updated)
+    } catch (err) {
+      console.error("Avatar upload failed:", err)
+    } finally {
+      setAvatarUploading(false)
+      if (avatarInputRef.current) avatarInputRef.current.value = ""
+    }
   }
 
   const saveProfile = async () => {
@@ -95,6 +116,7 @@ export function ProfileApp({ onLogout }: { onLogout: () => void }) {
         bio: editBio,
         linkedinUrl: editLinkedin,
         githubUrl: editGithub,
+        avatarUrl: editAvatar,
       }) as { profile: Profile }
       setProfile(updated)
       setSavedAccent(selectedAccent)
@@ -154,23 +176,40 @@ export function ProfileApp({ onLogout }: { onLogout: () => void }) {
 
         <div className="relative z-10 flex items-center gap-5">
           <div className="relative flex-shrink-0">
+            {/* Hidden file input for avatar */}
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
             <motion.div
-              className="flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-bold text-white"
+              className="flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-bold text-white overflow-hidden"
               style={{
-                background: "rgba(255,255,255,0.22)", backdropFilter: "blur(10px)",
+                background: profile?.avatarUrl ? undefined : "rgba(255,255,255,0.22)",
+                backdropFilter: "blur(10px)",
                 border: "2px solid rgba(255,255,255,0.35)",
                 boxShadow: "4px 4px 16px rgba(0,0,0,0.15)",
               }}
               whileHover={{ scale: 1.05 }}
             >
-              {initials}
+              {profile?.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={profile.avatarUrl} alt={profile.displayName} className="h-full w-full object-cover" />
+              ) : initials}
             </motion.div>
             <motion.button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={avatarUploading}
               className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full"
               style={{ background: "rgba(255,255,255,0.90)", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
               whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.92 }}
             >
-              <Camera className="h-3.5 w-3.5" style={{ color: "#6B4FE8" }} />
+              {avatarUploading
+                ? <Loader2 className="h-3.5 w-3.5 animate-spin" style={{ color: "#6B4FE8" }} />
+                : <Camera className="h-3.5 w-3.5" style={{ color: "#6B4FE8" }} />}
             </motion.button>
           </div>
 
@@ -212,6 +251,18 @@ export function ProfileApp({ onLogout }: { onLogout: () => void }) {
             >
               <h3 className="mb-5 text-lg font-bold" style={{ color: "#1E1060" }}>Edit Profile</h3>
               <div className="space-y-3">
+                {/* Avatar URL */}
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide" style={{ color: "#9B8FC8" }}>Profile Photo URL</label>
+                  <div className="flex items-center gap-3">
+                    {editAvatar && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={editAvatar} alt="avatar" className="h-10 w-10 rounded-xl object-cover flex-shrink-0" />
+                    )}
+                    <input value={editAvatar} onChange={(e) => setEditAvatar(e.target.value)}
+                      style={{ ...inputStyle, flex: 1 }} placeholder="https://... or use camera button" />
+                  </div>
+                </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide" style={{ color: "#9B8FC8" }}>Display Name</label>
                   <input value={editName} onChange={(e) => setEditName(e.target.value)} style={inputStyle} placeholder="Your name" />
